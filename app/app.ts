@@ -17,5 +17,5 @@ app.use('/api/json2db',require('./routes/controllers/json-to-db/json-to-db.contr
 app.use('/api/users',require('./routes/controllers/users/user.controller'));
 
 app.listen(port, function () {
-  console.log(`Example app listening on port ${port}!`);
+  console.log(`App listening on port ${port}!`);
 });

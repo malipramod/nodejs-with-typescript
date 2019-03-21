@@ -12,8 +12,8 @@ json2db.post('/storeusers', (req, res) => {
         let json2 = new JSON2DBHelper();
         json2.createUserDB(response.data);
         res.status(201).send("User database(s) and collection(s) are created");
-    }).catch(error => {
-        res.status(404).send('Unable to get users');
+    }).catch(err => {
+        res.status(404).send(`Unable to get users ${err}`);
     });
 });
 
@@ -29,8 +29,30 @@ json2db.post('/storepostcomments', (req, res) => {
         json2.createPostComments(posts, comments);
         res.status(201).send('Success');
     }).catch(err => {
-        res.status(404).send('Unable to get posts or comments or both');
+        res.status(404).send(`Unable to get posts or comments or both ${err}`);
     });
 });
+
+json2db.post('/createuserpostcomment', (req, res) => {
+    axios.get(`${appConstants.jsonPlaceHolderURL}users`).then(response => {
+        let json2 = new JSON2DBHelper();
+        json2.createUserDB(response.data);
+        let postsPromise = axios.get(`${appConstants.jsonPlaceHolderURL}posts`);
+        let commentsPromise = axios.get(`${appConstants.jsonPlaceHolderURL}comments`);
+
+        Promise.all([postsPromise, commentsPromise]).then(resp => {
+            let posts: Array<PostModel> = resp[0].data;
+            let comments: Array<CommentModel> = resp[1].data;
+
+            let json2 = new JSON2DBHelper();
+            json2.createPostComments(posts, comments);
+            res.status(201).send('Successfuly create users, post and comments');
+        }).catch(err => {
+            res.status(404).send(`Unable to get posts or comments or both ${err}`);
+        });
+    }).catch(err => {
+        res.status(404).send(`Unable to get users ${err}`);
+    });
+})
 
 module.exports = json2db;

@@ -56,7 +56,7 @@ export class JSON2DBHelper {
                 let posts = new PostCOmment(pc)
                 posts.save((err: any) => {
                     if (err) throw err;
-                })
+                });
             });
         })
     }
